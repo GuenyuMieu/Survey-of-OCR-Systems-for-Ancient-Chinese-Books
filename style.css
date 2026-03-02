@@ -1,0 +1,507 @@
+:root {
+    --primary: #81c16aa5;
+    --accent: #b7950b;
+    --bg: #fdfdfd;
+}
+
+body {
+    margin: 0;
+    font-family: "Source Han Serif SC", "Noto Serif SC", serif;
+    background: var(--bg);
+}
+
+/* 导航 */
+.navbar {
+    background: var(--primary);
+    color: white;
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* --- 导航栏容器：去掉最大宽度限制 --- */
+.nav-container {
+    width: 100%;
+    /* 占据全宽 */
+    max-width: none;
+    /* 移除 1200px 限制 */
+    margin: 0;
+    /* 移除居中对齐 */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 30px;
+    /* 仅保留 30px 的内边距，防止贴死边缘 */
+    box-sizing: border-box;
+    /* 确保 padding 不撑破宽度 */
+}
+
+/* --- Logo 样式 --- */
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: white;
+    margin-right: 40px;
+    /* Logo 和按钮之间的距离 */
+    white-space: nowrap;
+    /* 防止 Logo 换行 */
+}
+
+/* --- 导航链接：微调间距 --- */
+.nav-links {
+    display: flex;
+    gap: 10px;
+    /* 使用 gap 代替 margin-left，更现代 */
+}
+
+/* 移除之前的 margin-left 设置（如果有） */
+.nav-links button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 8px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+    margin-left: 0;
+    /* 确保没有旧的间距干扰 */
+}
+
+.nav-links button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+/* PDF 容器 */
+.pdf-container {
+    height: calc(100vh - 70px);
+    background: #525659;
+}
+
+/* 测试区布局 */
+.test-layout {
+    display: flex;
+    height: calc(100vh - 70px);
+}
+
+.sidebar {
+    width: 220px;
+    border-right: 1px solid #eee;
+    background: #fff;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.thumb-list img {
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: 0.3s;
+    border: 2px solid transparent;
+}
+
+.thumb-list img:hover {
+    opacity: 1;
+}
+
+.thumb-list img.active {
+    opacity: 1;
+    border-color: var(--accent);
+}
+
+.main-display {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    position: relative;
+}
+
+#placeholder {
+    text-align: center;
+    margin-top: 100px;
+    color: #999;
+}
+
+/* 图片展示 */
+.img-box {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#active-img {
+    max-width: 100%;
+    max-height: 450px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    cursor: zoom-in;
+}
+
+.hint {
+    font-size: 12px;
+    color: #888;
+    margin-top: 8px;
+}
+
+/* 动态卡片 */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.res-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    border-top: 5px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.res-card.special {
+    border-top-color: var(--accent);
+    background: #fffcf0;
+}
+
+.label {
+    font-weight: bold;
+    color: var(--primary);
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.text-box {
+    white-space: pre-wrap;
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #333;
+}
+
+/* 缩略图：固定高度与名字 */
+.thumb-item-wrapper {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.thumb-item-wrapper img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.thumb-item-wrapper.active img {
+    border-color: #b7950b;
+    background: #fffdf0;
+}
+
+.thumb-name {
+    font-size: 11px;
+    color: #777;
+    margin-top: 3px;
+    display: block;
+}
+
+/* 右侧主布局 */
+.top-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.mini-img-box img {
+    height: 80px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.btn-analyze {
+    padding: 10px 20px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 动态卡片：每行2个 */
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 强制两列 */
+    gap: 20px;
+}
+
+.res-card {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    height: 450px;
+    /* 固定高度 */
+}
+
+.res-card.special {
+    border: 2px solid #b7950b;
+}
+
+.card-header {
+    padding: 10px;
+    background: #f8f9fa;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}
+
+.card-body {
+    padding: 15px;
+    flex: 1;
+    overflow-y: auto;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+}
+
+/* 识别结果滚动 */
+.card-footer {
+    padding: 10px;
+    height: 100px;
+    overflow-y: auto;
+    font-size: 13px;
+    color: #666;
+    background: #fff;
+}
+
+/* 主展示区：图片放中间，不要太大 */
+.center-stage {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background: #eee;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.main-img-container {
+    text-align: center;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#active-img {
+    max-height: 350px;
+    max-width: 100%;
+    display: block;
+    cursor: default;
+}
+
+.img-name-label {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 结果网格 */
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.res-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.res-card:hover {
+    border-color: #b7950b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 10px;
+    background: #f4f4f4;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-header::after {
+    content: '点击对比 🔍';
+    font-size: 15px;
+    color: #b7950b;
+}
+
+.card-body {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #fafafa;
+
+    /* --- 核心修复：保留换行和空格 --- */
+    white-space: pre-wrap;
+    /* 保留换行符，且自动换行防止溢出 */
+    word-wrap: break-word;
+    /* 强制长单词/连续字符换行 */
+
+    /* 字体建议：使用衬线体更有古籍感 */
+    font-family: "Noto Serif SC", "SimSun", serif;
+    line-height: 1.8;
+    /* 适当的行高方便阅读 */
+    font-size: 1.05rem;
+    color: #333;
+}
+
+.card-footer {
+    padding: 10px;
+    background: #fffcf0;
+    border-top: 1px solid #eee;
+    height: 80px;
+    overflow-y: auto;
+    font-size: 12px;
+    color: #666;
+}
+
+/* 弹窗背景：遮罩层 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+}
+
+/* 弹窗内容容器：必须设置 relative */
+.modal-content {
+    position: relative;
+    /* 关键：作为关闭按钮的定位参考点 */
+    width: 95vw;
+    height: 90vh;
+    margin: 2vh auto;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* 弹窗头部：确保高度和背景色正确 */
+.modal-header {
+    padding: 12px 20px;
+    background: #5e80dcbf;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    /* 也可以作为参考 */
+}
+
+.modal-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.modal-left {
+    flex: 2;
+    background: #222;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+}
+
+.modal-left:active {
+    cursor: grabbing;
+}
+
+.modal-right {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    border-left: 1px solid #eee;
+    background: #fff;
+}
+
+#modal-img {
+    transition: transform 0.05s ease-out;
+    transform-origin: center;
+    max-width: 90%;
+}
+
+.zoom-tip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.modal-result-box pre {
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    line-height: 1.8;
+}
+
+.modal-review-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-left: 4px solid #b7950b;
+    background: #fffdf0;
+}
+
+/* 关闭按钮：现在它会相对于 .modal-content 定位 */
+.close-btn {
+    position: absolute;
+    right: 15px;
+    top: 8px;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    /* 如果 header 是深色的，用白色 */
+    cursor: pointer;
+    z-index: 2010;
+    /* 确保在最上层 */
+    line-height: 1;
+    user-select: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.close-btn:hover {
+    color: #ff4d4d;
+    transform: scale(1.1);
+}
