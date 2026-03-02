@@ -1,29 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
+
 <head>
-  <meta charset="utf-8">
-  <title>A Survey of OCR Systems for Ancient Chinese Books</title>
-  <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-.pdf-container {
-  height: 100vh;   /* 关键：视口高度 */
-}
-
-embed {
-  width: 100%;
-  height: 100%;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古籍 OCR 系统综述</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body style="margin:0">
 
-<embed src="A Survey of OCR Systems for Ancient Chinese Books.pdf" type="application/pdf" width="100%" height="100%">
+<body>
 
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">古籍OCR系统综述及评测对比</div>
+            <div class="nav-links">
+                <button onclick="switchTab('paper')" id="btn-paper" class="active">综述阅读</button>
+                <button onclick="switchTab('test')" id="btn-test">评测结果</button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="paper-section" class="tab-content">
+            <div class="pdf-container">
+                <iframe src="A Survey of OCR Systems for Ancient Chinese Books.pdf" width="100%" height="100%"
+                    frameborder="0"></iframe>
+            </div>
+        </section>
+
+        <section id="test-section" class="tab-content" style="display:none;">
+            <div class="test-layout">
+                <aside class="sidebar">
+                    <h3 class="side-title">测试样本</h3>
+                    <div id="thumb-list" class="thumb-list"></div>
+                </aside>
+
+                <div class="main-display">
+                    <div class="center-stage">
+                        <div class="main-img-container">
+                            <img id="active-img" src="" alt="Sample">
+                            <p class="img-name-label" id="current-file-name"></p>
+                        </div>
+                    </div>
+
+                    <div id="dynamic-cards" class="cards-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <div id="analysis-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span id="modal-title">对比详情</span>
+                    <span class="close-btn" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-left" id="drag-container">
+                        <div class="zoom-tip">滚轮缩放 | 按住拖动</div>
+                        <img id="modal-img" src="" draggable="false">
+                    </div>
+                    <div class="modal-right">
+                        <div class="modal-result-box">
+                            <h4 id="modal-soft-name"></h4>
+                            <pre id="modal-text"></pre>
+                            <div class="modal-review-box">
+                                <strong>结果分析：</strong>
+                                <p id="modal-review"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 
 </html>
