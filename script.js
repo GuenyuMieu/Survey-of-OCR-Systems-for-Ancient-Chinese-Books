@@ -131,7 +131,7 @@ function init() {
         div.id = `thumb-${index}`;
         div.innerHTML = `
             <img src="imgs/${name}" onclick="selectSample('${name}', ${index})">
-            <span class="thumb-name">${name}</span>
+            <span class="thumb-name">${name.split(".")[0]}</span>
         `;
         list.appendChild(div);
     });
@@ -146,7 +146,7 @@ function selectSample(name, index) {
     document.getElementById(`thumb-${index}`).classList.add('active');
 
     document.getElementById('active-img').src = `imgs/${name}`;
-    document.getElementById('current-file-name').innerText = name;
+    document.getElementById('current-file-name').innerText = name.split(".")[0];
 
     const grid = document.getElementById('dynamic-cards');
     grid.innerHTML = '';
@@ -230,5 +230,6 @@ function switchTab(tab) {
     document.getElementById(`${tab}-section`).style.display = 'block';
     document.getElementById(`btn-${tab}`).classList.add('active');
 }
+
 
 window.onload = init;
