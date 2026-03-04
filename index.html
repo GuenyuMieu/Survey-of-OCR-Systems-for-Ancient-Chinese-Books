@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>古籍 OCR 系统综述</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,22 +16,20 @@
             <div class="nav-links">
                 <button onclick="switchTab('paper')" id="btn-paper" class="active">综述阅读</button>
                 <button onclick="switchTab('test')" id="btn-test">评测结果</button>
+                <button id="btn-summary" onclick="openSummary()">总评</button>
             </div>
         </div>
     </nav>
 
     <main>
         <section id="paper-section" class="tab-content">
-            <div class="pdf-container">
-                <iframe src="A Survey of OCR Systems for Ancient Chinese Books.pdf" width="100%" height="100%"
-                    frameborder="0"></iframe>
-            </div>
+            <div id="pdf-viewer"></div>
         </section>
 
         <section id="test-section" class="tab-content" style="display:none;">
             <div class="test-layout">
                 <aside class="sidebar">
-                    <h3 class="side-title">测试样本</h3>
+                    <h3 class="side-title">古籍版面</h3>
                     <div id="thumb-list" class="thumb-list"></div>
                 </aside>
 
@@ -44,6 +42,26 @@
                     </div>
 
                     <div id="dynamic-cards" class="cards-grid"></div>
+                </div>
+            </div>
+            <div class="mobile-test-ui">
+                <div class="mobile-select-group">
+
+                    <div class="custom-select" id="img-select-box">
+                        <div class="selected">选择图片</div>
+                        <div class="options" id="img-options"></div>
+                    </div>
+
+                    <select id="mobile-soft-select"></select>
+
+                </div>
+                <div class="mobile-img-box">
+                    <img id="mobile-img">
+                </div>
+
+                <div class="mobile-result-box">
+                    <div id="mobile-text"></div>
+                    <div id="mobile-review"></div>
                 </div>
             </div>
         </section>
@@ -72,8 +90,21 @@
                 </div>
             </div>
         </div>
-    </main>
 
+        <div id="summary-modal" class="modal">
+            <div class="modal-content summary-box">
+                <div class="modal-header">
+                    <span>总评</span>
+                    <span class="close-btn" onclick="closeSummary()">&times;</span>
+                </div>
+                <div class="modal-body" style="padding: 20px;">
+                    <div id="summary-content"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="script.js"></script>
 </body>
 

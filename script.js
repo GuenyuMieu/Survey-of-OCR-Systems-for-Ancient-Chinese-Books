@@ -114,6 +114,87 @@ const ocrData = {
 };
 
 
+const summaryMarkdown = `
+# Coming Soon！！！
+
+`;
+
+function openSummary() {
+    document.getElementById("summary-content").innerHTML = marked.parse(summaryMarkdown);
+    document.getElementById("summary-modal").style.display = "block";
+}
+
+function closeSummary() {
+    document.getElementById("summary-modal").style.display = "none";
+}
+
+const url = 'A Survey of OCR Systems for Ancient Chinese Books.pdf'; // 同目录下的文件名
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+// 必须指明 worker 地址
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const container = document.getElementById('pdf-viewer');
+
+async function renderPDF() {
+    // 1. 加载文档
+    const loadingTask = pdfjsLib.getDocument(url);
+    const pdf = await loadingTask.promise;
+
+    // 2. 循环创建每一页的容器
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'page-container';
+        wrapper.dataset.pageNum = pageNum; // 存储页码
+        container.appendChild(wrapper);
+
+        // 3. 实例化观察器 (Lazy Load)
+        observer.observe(wrapper);
+    }
+}
+
+// 渲染特定页面的函数
+async function renderPage(pageNum, wrapper) {
+    if (wrapper.dataset.rendered) return; // 避免重复渲染
+    wrapper.dataset.rendered = 'true';
+
+    const pdf = await pdfjsLib.getDocument(url).promise;
+    const page = await pdf.getPage(pageNum);
+
+    // 计算缩放比例
+    // 为了保证清晰度，我们以容器实际宽度和 PDF 原始宽度的比例来渲染
+    const viewport = page.getViewport({ scale: 4 }); // 基准缩放
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+    };
+
+    await page.render(renderContext).promise;
+    wrapper.appendChild(canvas);
+}
+
+// 4. 交叉观察器：当页面进入视口时才触发渲染
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const pageNum = parseInt(entry.target.dataset.pageNum);
+            renderPage(pageNum, entry.target);
+        }
+    });
+}, {
+    rootMargin: '200px', // 提前 200px 开始渲染，提升用户体验
+    threshold: 0.1
+});
+
+renderPDF();
+
+
 let currentFile = "";
 let scale = 1;
 let translateX = 0;
@@ -231,4 +312,156 @@ function switchTab(tab) {
     document.getElementById(`btn-${tab}`).classList.add('active');
 }
 
-window.onload = init;
+
+function initMobileImages() {
+    const container = document.getElementById("img-options");
+    const selected = document.querySelector("#img-select-box .selected");
+
+    const files = Object.keys(ocrData);
+
+    container.innerHTML = "";
+
+    files.forEach(name => {
+        const div = document.createElement("div");
+        div.className = "option-item";
+        div.innerHTML = `
+            <img src="imgs/${name}">
+            <span>${name.split(".")[0]}</span>
+        `;
+
+        div.onclick = function () {
+            selected.innerHTML = div.innerHTML;
+            document.getElementById("img-select-box").classList.remove("open");
+
+            // ❗ 改成调用 loadMobileData
+            loadMobileData(name);
+        };
+
+        container.appendChild(div);
+    });
+
+    selected.onclick = function (e) {
+        e.stopPropagation();
+        document.getElementById("img-select-box").classList.toggle("open");
+    };
+
+    document.addEventListener("click", function () {
+        document.getElementById("img-select-box").classList.remove("open");
+    });
+
+    // ✅ 默认加载第一个
+    selected.innerHTML = `
+        <img src="imgs/${files[0]}">
+        <span>${files[0].split(".")[0]}</span>
+    `;
+
+    loadMobileData(files[0]);   // ❗ 一定要加
+}
+
+function loadMobileData(file) {
+    const softSelect = document.getElementById("mobile-soft-select");
+    const img = document.getElementById("mobile-img");
+
+    softSelect.innerHTML = "";
+
+    const softwares = Object.keys(ocrData[file]);
+
+    softwares.forEach((soft, index) => {
+        const option = document.createElement("option");
+        option.value = soft;
+        option.textContent = soft;
+        softSelect.appendChild(option);
+    });
+
+    // ✅ 强制启用
+    softSelect.disabled = false;
+
+    // ✅ 默认选第一个
+    softSelect.selectedIndex = 0;
+
+    img.src = "imgs/" + file;
+
+    function updateSoftware() {
+        const selectedSoft = softSelect.value;
+        const data = ocrData[file][selectedSoft];
+
+        document.getElementById("mobile-text").innerText = data.text || "";
+        document.getElementById("mobile-review").innerText = data.review || "";
+    }
+
+    softSelect.onchange = updateSoftware;
+
+    // ✅ 主动触发一次
+    updateSoftware();
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    init();
+    initMobileImages();
+    const mobileImg = document.getElementById("mobile-img");
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+
+    let startX = 0;
+    let startY = 0;
+
+    let isDragging = false;
+    let startDistance = 0;
+
+    function updateTransform() {
+        mobileImg.style.transform =
+            `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }
+
+    function getDistance(touches) {
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    mobileImg.addEventListener("touchstart", function (e) {
+
+        if (e.touches.length === 2) {
+            startDistance = getDistance(e.touches);
+        }
+
+        if (e.touches.length === 1) {
+            isDragging = true;
+            startX = e.touches[0].clientX - translateX;
+            startY = e.touches[0].clientY - translateY;
+        }
+
+    });
+
+    mobileImg.addEventListener("touchmove", function (e) {
+
+        if (e.touches.length === 2) {
+            e.preventDefault();
+
+            let newDistance = getDistance(e.touches);
+            scale *= newDistance / startDistance;
+
+            scale = Math.min(Math.max(1, scale), 5);
+
+            startDistance = newDistance;
+            updateTransform();
+        }
+
+        if (e.touches.length === 1 && isDragging && scale > 1) {
+            e.preventDefault();
+
+            translateX = e.touches[0].clientX - startX;
+            translateY = e.touches[0].clientY - startY;
+
+            updateTransform();
+        }
+
+    }, { passive: false });
+
+    mobileImg.addEventListener("touchend", function () {
+        isDragging = false;
+    });
+});
