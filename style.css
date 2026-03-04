@@ -505,3 +505,237 @@ body {
     color: #ff4d4d;
     transform: scale(1.1);
 }
+
+.mobile-test-ui {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .logo {
+        display: none;
+    }
+
+    .navbar {
+        padding: 8px 0;
+    }
+
+    .nav-links button {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    .nav-container {
+        justify-content: center;
+        padding: 0 10px;
+    }
+
+    .nav-links button {
+        padding: 10px;
+        font-size: 10px;
+    }
+
+
+
+}
+
+@media (max-width: 768px) {
+    .pdf-container {
+        height: calc(100vh - 60px);
+    }
+}
+
+@media (max-width: 768px) {
+
+    .test-layout {
+        display: none;
+    }
+
+    .mobile-test-ui {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 60px);
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .mobile-img-box {
+        flex: 0 0 40%;
+        overflow: hidden;
+        text-align: center;
+        background: #eee;
+    }
+
+    .mobile-img-box img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+
+    }
+
+    .mobile-result-box {
+        flex: 1;
+        overflow-y: auto;
+        background: #fff;
+        padding: 5px;
+        border: 1px solid #ddd;
+        white-space: pre-wrap;
+    }
+
+
+}
+
+@media (max-width:768px) {
+
+    .mobile-select-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .custom-select {
+        position: relative;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .custom-select .selected {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .custom-select img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .options {
+        display: none;
+        position: absolute;
+        width: 100%;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        max-height: 250px;
+        overflow-y: auto;
+        z-index: 100;
+    }
+
+    .custom-select.open .options {
+        display: block;
+    }
+
+    .option-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+    }
+
+    .option-item:hover {
+        background: #f4f4f4;
+    }
+
+}
+
+.mobile-img-box img {
+    touch-action: none;
+}
+
+@media (max-width:768px) {
+
+    .mobile-test-ui {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .mobile-img-box {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 10px;
+        min-height: 250px;
+    }
+
+    .mobile-result-box {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        font-size: 15px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+
+        min-height: 300px;
+        /* 给它一个明确的保底高度，这样页面就会变长，产生滑动空间 */
+        flex-grow: 1;
+        /* 如果父容器有剩余空间，它会继续撑大 */
+        margin-bottom: 30px;
+        /* 在最底部留点空白，防止滑到底时太突兀 */
+    }
+
+    #mobile-review {
+        margin-top: 15px;
+        padding: 10px;
+        border-left: 4px solid #b7950b;
+        background: #fffdf0;
+    }
+
+    select {
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+}
+
+#pdf-viewer {
+    width: 100%;
+    background-color: #525659;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+/* 每一个页面的包裹层 */
+.page-container {
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    position: relative;
+    /* 初始高度，防止滚动条抖动，渲染后会被撑开 */
+    min-height: 500px;
+}
+
+/* 适配逻辑 */
+@media (max-width: 768px) {
+    .page-container {
+        width: 100% !important;
+        /* 移动端铺满 */
+        margin-bottom: 5px;
+    }
+}
+
+@media (min-width: 769px) {
+    .page-container {
+        width: 80%;
+        /* PC端显示 80% 宽度，可根据需要调整 */
+        max-width: 900px;
+    }
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    /* 让 canvas 撑满容器宽度 */
+    height: auto;
+}
