@@ -242,8 +242,8 @@ function selectSample(name, index) {
         card.onclick = () => openModal(softName, data);
         card.innerHTML = `
             <div class="card-header">${softName}</div>
-            <div class="card-body">${data.text}</div>
-            <div class="card-footer"><strong>点评：</strong>${data.review}</div>
+            <div class="card-body">${data.text || "正在测试中！"}</div>
+            <div class="card-footer"><strong>点评：</strong>${data.review || "暂无评论。"}</div>
         `;
         grid.appendChild(card);
     });
@@ -255,8 +255,8 @@ function openModal(softName, data) {
     const modalImg = document.getElementById('modal-img');
 
     document.getElementById('modal-soft-name').innerText = softName;
-    document.getElementById('modal-text').innerText = data.text;
-    document.getElementById('modal-review').innerText = data.review;
+    document.getElementById('modal-text').innerText = data.text || "正在测试中！";
+    document.getElementById('modal-review').innerText = data.review || "暂无评论。";
     modalImg.src = `imgs/${currentFile}`;
 
     modal.style.display = 'block';
