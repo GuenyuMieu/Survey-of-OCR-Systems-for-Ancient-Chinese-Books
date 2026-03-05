@@ -5,6 +5,7 @@
  * 3. 键名（如 "1.jpg"）必须与文件名一致。
  */
 const ocrData = {
+
     "五家评杜工部集.png": {
         "千问3.5 plus": { "text": "都無些聲響可誦\n公意謂建都非本計也\n歲暮\n蒼生未蘇息胡馬半乾坤議在雲臺上誰扶黃屋尊建都分魏闕下詔闢荆門恐失東人望其如西極存時危當雪耻計大豈輕論雖倚三階正終愁萬國翻牽裾恨不死漏網辱殊恩永負漢庭哭遙憐湘水魂窮冬客江劒（一云劍外）隨事有田園風斷青蒲節霜埋翠竹根衣冠空穰穰關輔久遠（一云昏願枉一一云唯願駐長安日光輝照北原\n歲暮遠為客邊隅還用兵煙塵犯雪嶺鼓角動江城天地日流血朝廷誰請纓濟時敢愛死寂寞壯心驚和裴迪登蜀州東亭送客逢早梅相憶見寄東閣官梅動詩興還如何遜在揚州此時對雪遙相憶送客逢春（一作花）可更作自由幸不折來傷歲暮若為看去亂鄉（一作春）愁江邊一樹垂垂發朝夕催人自白頭\n寄贈王十將軍承俊", "review": "" },
         "Gemini 3.1 Pro": { "text": "", "review": "" },
@@ -116,7 +117,10 @@ const ocrData = {
 
 const summaryMarkdown = `
 # Coming Soon！！！
-
+## 图片示例
+![测试图片](imgs/精选伏敔堂诗録.png)
+## 图片示例
+![测试图片](imgs/精选伏敔堂诗録.png)
 `;
 
 function openSummary() {
@@ -303,9 +307,6 @@ window.onmouseup = () => { isDragging = false; };
 dragArea.onmouseleave = () => { isDragging = false; };
 
 function switchTab(tab) {
-    if (tab == "test") {
-        alert('正在测评中！');
-    }
     document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
     document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
     document.getElementById(`${tab}-section`).style.display = 'block';
@@ -355,7 +356,7 @@ function initMobileImages() {
         <span>${files[0].split(".")[0]}</span>
     `;
 
-    loadMobileData(files[0]);   // ❗ 一定要加
+    loadMobileData(files[0]);
 }
 
 function loadMobileData(file) {
@@ -385,8 +386,8 @@ function loadMobileData(file) {
         const selectedSoft = softSelect.value;
         const data = ocrData[file][selectedSoft];
 
-        document.getElementById("mobile-text").innerText = data.text || "";
-        document.getElementById("mobile-review").innerText = data.review || "";
+        document.getElementById("mobile-text").innerText = data.text || "正在测试中！";
+        document.getElementById("mobile-review").innerText = data.review || "暂无评论。";
     }
 
     softSelect.onchange = updateSoftware;
