@@ -237,8 +237,13 @@ function selectSample(name, index) {
         const card = document.createElement('div');
         card.className = 'res-card';
         card.onclick = () => openModal(softName, data);
+        const charCount = (data.text.match(/\p{Script=Han}/gu) || []).length;
         card.innerHTML = `
-            <div class="card-header">${softName} &nbsp;&nbsp;&nbsp;${(data.text.match(/\p{Script=Han}/gu) || []).length}(中文字符数)</div>
+            <div class="card-header">
+                <span class="soft-name">${softName}</span>
+                <span class="click-hint">点击对比</span>
+                <span class="char-count-badge"><span class="count-number">${charCount}</span> 字</span>
+            </div>
             <div class="card-body">${data.text || "正在测试中！"}</div>
             <div class="card-footer"><strong>点评：</strong>${data.review || "暂无评论。"}</div>
         `;
@@ -382,9 +387,9 @@ function loadMobileData(file) {
     function updateSoftware() {
         const selectedSoft = softSelect.value;
         const data = ocrData[file][selectedSoft];
+        const charCount = (data.text.match(/\p{Script=Han}/gu) || []).length;
 
-
-        document.getElementById("mobile-wordscount").innerText = "中文字符数：" + (data.text.match(/\p{Script=Han}/gu) || []).length;
+        document.getElementById("mobile-wordscount").innerHTML = `中文字符数 <span class="count-number">${charCount}</span>`;
         document.getElementById("mobile-text").innerText = data.text || "正在测试中！";
         document.getElementById("mobile-review").innerText = data.review || "暂无评论。";
     }
