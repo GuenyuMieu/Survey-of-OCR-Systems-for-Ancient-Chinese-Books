@@ -138,19 +138,30 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 const container = document.getElementById('pdf-viewer');
 
 async function renderPDF() {
-    // 1. 加载文档
-    const loadingTask = pdfjsLib.getDocument(url);
-    const pdf = await loadingTask.promise;
+    const loadingIndicator = document.getElementById('pdf-loading');
 
-    // 2. 循环创建每一页的容器
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'page-container';
-        wrapper.dataset.pageNum = pageNum; // 存储页码
-        container.appendChild(wrapper);
+    try {
+        // 1. 加载文档
+        const loadingTask = pdfjsLib.getDocument(url);
+        const pdf = await loadingTask.promise;
 
-        // 3. 实例化观察器 (Lazy Load)
-        observer.observe(wrapper);
+        // 隐藏 loading，显示 PDF
+        loadingIndicator.style.display = 'none';
+
+        // 2. 循环创建每一页的容器
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'page-container';
+            wrapper.dataset.pageNum = pageNum; // 存储页码
+            container.appendChild(wrapper);
+
+            // 3. 实例化观察器 (Lazy Load)
+            observer.observe(wrapper);
+        }
+    } catch (error) {
+        loadingIndicator.innerHTML = `
+            <p style="color: #ff6b6b;">论文加载失败：${error.message}</p>
+        `;
     }
 }
 
@@ -223,13 +234,48 @@ function init() {
 }
 
 function selectSample(name, index) {
+    const activeImg = document.getElementById('active-img');
+    const loadingIndicator = document.getElementById('img-loading');
+    const thumbWrappers = document.querySelectorAll('.thumb-item-wrapper');
+
+    // 设置当前文件和激活状态
     currentFile = name;
-    document.querySelectorAll('.thumb-item-wrapper').forEach(w => w.classList.remove('active'));
+    thumbWrappers.forEach(w => w.classList.remove('active'));
     document.getElementById(`thumb-${index}`).classList.add('active');
 
-    document.getElementById('active-img').src = `imgs/${name}`;
+    // 显示 loading，禁用所有缩略图
+    loadingIndicator.style.display = 'flex';
+    activeImg.style.opacity = '0.3';
+    thumbWrappers.forEach(w => w.style.pointerEvents = 'none');
+
+    // 更新文件名
     document.getElementById('current-file-name').innerText = name.split(".")[0];
 
+    // 预加载图片
+    const img = new Image();
+    img.onload = function() {
+        // 图片加载完成，更新显示
+        activeImg.src = `imgs/${name}`;
+        loadingIndicator.style.display = 'none';
+        activeImg.style.opacity = '1';
+        thumbWrappers.forEach(w => w.style.pointerEvents = 'auto');
+
+        // 更新评测卡片
+        updateCards(name);
+    };
+
+    img.onerror = function() {
+        // 加载失败
+        loadingIndicator.style.display = 'none';
+        activeImg.style.opacity = '1';
+        thumbWrappers.forEach(w => w.style.pointerEvents = 'auto');
+        alert(`图片 ${name} 加载失败！`);
+    };
+
+    img.src = `imgs/${name}`;
+}
+
+function updateCards(name) {
     const grid = document.getElementById('dynamic-cards');
     grid.innerHTML = '';
 

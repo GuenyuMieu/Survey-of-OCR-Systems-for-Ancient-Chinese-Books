@@ -23,6 +23,10 @@
 
     <main>
         <section id="paper-section" class="tab-content">
+            <div id="pdf-loading" class="loading-indicator">
+                <div class="spinner"></div>
+                <p>论文加载中...</p>
+            </div>
             <div id="pdf-viewer"></div>
         </section>
 
@@ -36,6 +40,9 @@
                 <div class="main-display">
                     <div class="center-stage">
                         <div class="main-img-container">
+                            <div id="img-loading" class="img-loading-indicator" style="display: none;">
+                                <div class="spinner"></div>
+                            </div>
                             <img id="active-img" src="" alt="Sample">
                             <p class="img-name-label" id="current-file-name"></p>
                         </div>
