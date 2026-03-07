@@ -383,6 +383,8 @@ function loadMobileData(file) {
         const selectedSoft = softSelect.value;
         const data = ocrData[file][selectedSoft];
 
+
+        document.getElementById("mobile-wordscount").innerText = "中文字符数：" + (data.text.match(/\p{Script=Han}/gu) || []).length;
         document.getElementById("mobile-text").innerText = data.text || "正在测试中！";
         document.getElementById("mobile-review").innerText = data.review || "暂无评论。";
     }
