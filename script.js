@@ -256,7 +256,7 @@ function openModal(softName, data) {
     const modal = document.getElementById('analysis-modal');
     const modalImg = document.getElementById('modal-img');
 
-    document.getElementById('modal-soft-name').innerText = softName;
+    document.getElementById('modal-title').innerText = softName;
     document.getElementById('modal-text').innerText = data.text || "正在测试中！";
     document.getElementById('modal-review').innerText = data.review || "暂无评论。";
     modalImg.src = `imgs/${currentFile}`;
