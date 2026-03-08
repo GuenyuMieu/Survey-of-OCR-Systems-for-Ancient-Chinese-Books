@@ -136,7 +136,9 @@ canvas {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .img-loading-indicator {
@@ -588,55 +590,203 @@ canvas {
 .mobile-select-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
+/* 自定义下拉框基础样式 */
 .custom-select {
     position: relative;
     background: white;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.custom-select:hover {
+    border-color: #b0b0b0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.custom-select.open {
+    border-color: #4a9eff;
+    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.15);
+}
+
+.custom-select:focus-within {
+    border-color: #4a9eff;
+    box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
 }
 
 .custom-select .selected {
-    padding: 10px;
+    padding: 14px 16px;
     display: flex;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    background: linear-gradient(135deg, #fafbfc, #fff);
+    border-radius: 11px;
+    position: relative;
+}
+
+.custom-select .selected::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #666;
+    border-bottom: 2px solid #666;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.custom-select.open .selected::after {
+    transform: rotate(-135deg);
 }
 
 .custom-select img {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-select span {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.select-icon {
+    width: 22px;
+    height: 22px;
+    color: #666;
 }
 
 .options {
     display: none;
     position: absolute;
     width: 100%;
+    top: calc(100% + 6px);
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    max-height: 250px;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    max-height: 280px;
     overflow-y: auto;
     z-index: 100;
+    padding: 6px;
+    border: 1px solid #e8e8e8;
+}
+
+.options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.options::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.options::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.options::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
 }
 
 .custom-select.open .options {
     display: block;
+    animation: slideDown 0.25s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 选中项样式（可以通过JS添加active类） */
+.option-item.active {
+    background: linear-gradient(135deg, #e6f0ff, #dbeafe);
+}
+
+/* 图片选择框中显示图片时的特殊样式 */
+#img-select-box img {
+    max-width: 52px;
+    max-height: 52px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .option-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
 
 .option-item:hover {
-    background: #f4f4f4;
+    background: linear-gradient(135deg, #f0f7ff, #e6f2ff);
+}
+
+.option-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.option-item span {
+    font-size: 13px;
+    color: #444;
+}
+
+/* 软件选择框选项没有图片，增加一些额外样式 */
+#soft-options .option-item {
+    padding: 12px 16px;
+    justify-content: flex-start;
+    position: relative;
+}
+
+#soft-options .option-item:hover {
+    background: linear-gradient(135deg, #e6f0ff, #dbeafe);
+}
+
+#soft-options .option-item span {
+    font-weight: 500;
+}
+
+/* 给软件选择框选项添加一个左侧指示条 */
+#soft-options .option-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px;
+    transition: height 0.15s ease;
+}
+
+#soft-options .option-item:hover::before {
+    height: 60%;
 }
 
 .mobile-img-box {
@@ -656,24 +806,17 @@ canvas {
 .mobile-result-box {
     flex: 1;
     overflow-y: auto;
-    background: linear-gradient(to bottom, #fafbfc, #fff);
-    padding: 12px;
+    background: linear-gradient(135deg, #fafbfc, #fff);
+    padding: 16px;
     border: 1px solid #e8e8e8;
     white-space: pre-wrap;
     font-size: 15px;
     line-height: 1.7;
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-#mobile-text {
-    padding-top: 12px;
-    margin-bottom: 0;
-    color: #333;
-    font-family: "Noto Serif SC", "SimSun", serif;
-    line-height: 1.8;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    position: relative;
 }
 
 /* 移动端字符数显示样式 */
@@ -681,15 +824,15 @@ canvas {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 14px;
-    background: linear-gradient(135deg, #81c16a, #a5d88f);
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
     color: white;
     border-radius: 16px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     margin-bottom: 8px;
     align-self: flex-start;
-    box-shadow: 0 2px 6px rgba(129, 193, 106, 0.3);
+    box-shadow: 0 2px 6px rgba(149, 165, 166, 0.3);
 }
 
 #mobile-wordscount::before {
@@ -698,17 +841,52 @@ canvas {
 }
 
 #mobile-wordscount .count-number {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+#mobile-text {
+    padding: 14px;
+    margin-bottom: 0;
+    color: #2c3e50;
+    font-family: "Noto Serif SC", "SimSun", serif;
+    line-height: 1.9;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e8ecf1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    word-break: break-all;
+    margin-top: 8px;
 }
 
 #mobile-review {
-    margin-top: 12px;
-    padding: 12px;
-    border-left: 4px solid #b7950b;
-    background: linear-gradient(to right, #fffdf5, #fffef8);
-    border-radius: 0 8px 8px 0;
-    box-shadow: 0 1px 3px rgba(183, 149, 11, 0.1);
+    margin-top: 8px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #fffbf0, #fff8e7);
+    border: 2px solid #f5a623;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(245, 166, 35, 0.15);
+    position: relative;
+    color: #5a4a1c;
+}
+
+/* 移动端结果框滚动条样式 */
+.mobile-result-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mobile-result-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.mobile-result-box::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #c1c1c1, #a1a1a1);
+    border-radius: 3px;
+}
+
+.mobile-result-box::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #a1a1a1, #818181);
 }
 
 select {
@@ -752,22 +930,28 @@ select {
         gap: 15px;
     }
 
+    .mobile-select-group {
+        gap: 14px;
+    }
+
     .mobile-img-box {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        padding: 10px;
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        padding: 16px;
         min-height: 250px;
+        border: 1px solid #e8ecf1;
     }
 
     .mobile-result-box {
-        background: white;
-        border-radius: 12px;
-        padding: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        background: linear-gradient(135deg, #fafbfc, #fff);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         min-height: 300px;
         flex-grow: 1;
         margin-bottom: 30px;
+        border: 1px solid #e8ecf1;
     }
 
     /* Summary box移动端样式 */

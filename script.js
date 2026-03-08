@@ -370,16 +370,25 @@ function initMobileImages() {
 
     container.innerHTML = "";
 
-    files.forEach(name => {
+    files.forEach((name, index) => {
         const div = document.createElement("div");
-        div.className = "option-item";
+        div.className = "option-item" + (index === 0 ? " active" : "");
         div.innerHTML = `
             <img src="imgs/${name}">
             <span>${name.split(".")[0]}</span>
         `;
 
-        div.onclick = function () {
-            selected.innerHTML = div.innerHTML;
+        div.onclick = function (e) {
+            e.stopPropagation();
+            // 移除所有active类
+            container.querySelectorAll(".option-item").forEach(item => item.classList.remove("active"));
+            // 添加active类到当前选中的项
+            div.classList.add("active");
+
+            selected.innerHTML = `
+                <img src="imgs/${name}">
+                <span>${name.split(".")[0]}</span>
+            `;
             document.getElementById("img-select-box").classList.remove("open");
 
             // ❗ 改成调用 loadMobileData
@@ -396,6 +405,7 @@ function initMobileImages() {
 
     document.addEventListener("click", function () {
         document.getElementById("img-select-box").classList.remove("open");
+        document.getElementById("soft-select-box").classList.remove("open");
     });
 
     // ✅ 默认加载第一个
@@ -408,39 +418,69 @@ function initMobileImages() {
 }
 
 function loadMobileData(file) {
-    const softSelect = document.getElementById("mobile-soft-select");
+    const softSelectBox = document.getElementById("soft-select-box");
+    const softOptions = document.getElementById("soft-options");
     const img = document.getElementById("mobile-img");
 
-    softSelect.innerHTML = "";
+    softOptions.innerHTML = "";
+    const selected = softSelectBox.querySelector(".selected");
 
     const softwares = Object.keys(ocrData[file]);
 
+    // 初始化当前选中的软件
+    let currentSoft = softwares[0];
+
     softwares.forEach((soft, index) => {
-        const option = document.createElement("option");
-        option.value = soft;
-        option.textContent = soft;
-        softSelect.appendChild(option);
+        const div = document.createElement("div");
+        div.className = "option-item" + (index === 0 ? " active" : "");
+        div.innerHTML = `<span>${soft}</span>`;
+
+        div.onclick = function (e) {
+            e.stopPropagation();
+            currentSoft = soft;
+
+            // 移除所有active类
+            softOptions.querySelectorAll(".option-item").forEach(item => item.classList.remove("active"));
+            // 添加active类到当前选中的项
+            div.classList.add("active");
+
+            selected.innerHTML = `
+                <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>${soft}</span>
+            `;
+            softSelectBox.classList.remove("open");
+            updateSoftware();
+        };
+
+        softOptions.appendChild(div);
     });
 
-    // ✅ 强制启用
-    softSelect.disabled = false;
+    // 设置默认选中
+    selected.innerHTML = `
+        <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        <span>${currentSoft}</span>
+    `;
 
-    // ✅ 默认选第一个
-    softSelect.selectedIndex = 0;
+    // 下拉框打开/关闭逻辑
+    selected.onclick = function (e) {
+        e.stopPropagation();
+        softSelectBox.classList.toggle("open");
+    };
 
     img.src = "imgs/" + file;
 
     function updateSoftware() {
-        const selectedSoft = softSelect.value;
-        const data = ocrData[file][selectedSoft];
+        const data = ocrData[file][currentSoft];
         const charCount = (data.text.match(/\p{Script=Han}/gu) || []).length;
 
         document.getElementById("mobile-wordscount").innerHTML = `中文字符数 <span class="count-number">${charCount}</span>`;
         document.getElementById("mobile-text").innerText = data.text || "正在测试中！";
         document.getElementById("mobile-review").innerText = data.review || "暂无评论。";
     }
-
-    softSelect.onchange = updateSoftware;
 
     // ✅ 主动触发一次
     updateSoftware();
