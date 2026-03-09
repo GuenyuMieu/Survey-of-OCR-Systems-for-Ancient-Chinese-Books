@@ -129,7 +129,7 @@ function closeSummary() {
     document.getElementById("summary-modal").style.display = "none";
 }
 
-const url = 'A Survey of OCR Systems for Ancient Chinese Books.pdf'; // 同目录下的文件名
+const url = './A Survey of OCR Systems for Ancient Chinese Books.pdf'; // 同目录下的文件名
 const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
 // 必须指明 worker 地址
