@@ -143,10 +143,7 @@ async function renderPDF() {
     try {
         // 1. 加载文档
         const loadingTask = pdfjsLib.getDocument({
-            url: url, // 你的 PDF 路径
-            disableRange: true,         // 禁用分段加载（解决 400 的核心）
-            disableStream: true,         // 禁用流式加载
-            disableAutoFetch: true
+            url: url
         });
         const pdf = await loadingTask.promise;
 
