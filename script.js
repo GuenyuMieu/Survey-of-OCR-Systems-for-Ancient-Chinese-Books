@@ -129,7 +129,7 @@ function closeSummary() {
     document.getElementById("summary-modal").style.display = "none";
 }
 
-const url = '/A Survey of OCR Systems for Ancient Chinese Books.pdf'; // 同目录下的文件名
+const url = 'A Survey of OCR Systems for Ancient Chinese Books.pdf'; // 同目录下的文件名
 const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
 // 必须指明 worker 地址
@@ -142,7 +142,11 @@ async function renderPDF() {
 
     try {
         // 1. 加载文档
-        const loadingTask = pdfjsLib.getDocument(url);
+        const loadingTask = pdfjsLib.getDocument({
+            url: url, // 你的 PDF 路径
+            disableRange: true,         // 禁用分段加载（解决 400 的核心）
+            disableStream: true         // 禁用流式加载
+        });
         const pdf = await loadingTask.promise;
 
         // 隐藏 loading，显示 PDF
