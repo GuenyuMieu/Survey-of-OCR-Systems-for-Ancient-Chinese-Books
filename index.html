@@ -114,13 +114,17 @@
         </div>
 
         <div id="summary-modal" class="modal">
-            <div class="modal-content summary-box">
+            <div class="modal-content summary-box" id="summary-modal-content">
                 <div class="modal-header">
                     <span>总评</span>
                     <span class="close-btn" onclick="closeSummary()">&times;</span>
                 </div>
-                <div class="modal-body" style="padding: 20px;">
-                    <div id="summary-content"></div>
+                <div class="modal-body" id="summary-pdf-body">
+                    <div id="summary-pdf-loading" class="loading-indicator">
+                        <div class="spinner"></div>
+                        <p>PDF 加载中...</p>
+                    </div>
+                    <div id="summary-pdf-viewer"></div>
                 </div>
             </div>
         </div>

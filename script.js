@@ -4,6 +4,20 @@
  * 2. 在下方 ocrData 增加对应条目。
  * 3. 键名（如 "1.jpg"）必须与文件名一致。
  */
+
+// 移动端浏览器检测并提醒
+(function () {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const hasShownTip = localStorage.getItem('mobileTipShown');
+
+    if (isMobile && !hasShownTip) {
+        setTimeout(() => {
+            alert('建议使用电脑浏览器访问，可获得更好的阅读体验。');
+            localStorage.setItem('mobileTipShown', 'true');
+        }, 500);
+    }
+})();
+
 const ocrData = {
 
     "五家评杜工部集.png": {
@@ -115,19 +129,137 @@ const ocrData = {
 };
 
 
-const summaryMarkdown = `
-# Coming Soon！！！
-
-`;
+// Summary PDF 相关变量
+const summaryPdfUrl = './summary.pdf';
+let summaryPdfLoaded = false;
+let summaryPdfDoc = null; // 缓存 PDF 文档对象
+let summaryObserver = null;
 
 function openSummary() {
-    document.getElementById("summary-content").innerHTML = marked.parse(summaryMarkdown);
     document.getElementById("summary-modal").style.display = "block";
+
+    // 如果还没有加载过 PDF，则加载
+    if (!summaryPdfLoaded) {
+        renderSummaryPDF();
+    }
 }
 
 function closeSummary() {
     document.getElementById("summary-modal").style.display = "none";
 }
+
+// 渲染 Summary PDF
+async function renderSummaryPDF() {
+    const loadingIndicator = document.getElementById('summary-pdf-loading');
+    const container = document.getElementById('summary-pdf-viewer');
+    const modalContent = document.getElementById('summary-modal-content');
+
+    try {
+        // 加载 PDF 文档并缓存
+        const loadingTask = pdfjsLib.getDocument({
+            url: summaryPdfUrl,
+            cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+            cMapPacked: true
+        });
+        summaryPdfDoc = await loadingTask.promise;
+        const pdf = summaryPdfDoc;
+
+        // PC端直接设置固定宽度，PDF自适应
+        if (window.innerWidth > 768) {
+            modalContent.style.width = '1200px';
+        }
+
+        // 隐藏 loading，显示 PDF
+        loadingIndicator.style.display = 'none';
+
+        // 清除之前的观察器
+        if (summaryObserver) {
+            summaryObserver.disconnect();
+        }
+
+        // 循环创建每一页的容器
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'page-container';
+            wrapper.dataset.pageNum = pageNum;
+            container.appendChild(wrapper);
+
+            // 实例化观察器 (Lazy Load)
+            summaryObserver.observe(wrapper);
+        }
+
+        summaryPdfLoaded = true;
+    } catch (error) {
+        loadingIndicator.innerHTML = `
+            <p style="color: #ff6b6b;">PDF 加载失败：${error.message}</p>
+        `;
+    }
+}
+
+// 渲染 Summary PDF 特定页面
+async function renderSummaryPage(pageNum, wrapper) {
+    if (wrapper.dataset.rendered) return;
+    wrapper.dataset.rendered = 'true';
+
+    // 直接用 viewer 容器的宽度
+    const viewer = document.getElementById('summary-pdf-viewer');
+    const contentWidth = viewer.clientWidth;
+
+    // 使用缓存的 PDF 文档，避免重复加载
+    const pdf = summaryPdfDoc;
+    const page = await pdf.getPage(pageNum);
+
+    const viewport = page.getViewport({ scale: 1 });
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    const scale = (contentWidth / viewport.width) * dpr;
+    const scaledViewport = page.getViewport({ scale: scale });
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    // 设置 canvas 尺寸
+    canvas.height = scaledViewport.height;
+    canvas.width = scaledViewport.width;
+
+    // CSS 尺寸按 DPR 缩放，display: block 避免基线对齐问题
+    canvas.style.width = (scaledViewport.width / dpr) + 'px';
+    canvas.style.height = (scaledViewport.height / dpr) + 'px';
+    canvas.style.display = 'block';
+
+    const renderContext = {
+        canvasContext: context,
+        viewport: scaledViewport
+    };
+
+    await page.render(renderContext).promise;
+    wrapper.appendChild(canvas);
+}
+
+// Summary PDF 交叉观察器
+summaryObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const pageNum = parseInt(entry.target.dataset.pageNum);
+            renderSummaryPage(pageNum, entry.target);
+        }
+    });
+}, {
+    rootMargin: '200px',
+    threshold: 0.1
+});
+
+// 窗口大小改变时重新调整
+window.addEventListener('resize', () => {
+    if (document.getElementById("summary-modal").style.display === "block" && summaryPdfLoaded) {
+        const modalContent = document.getElementById('summary-modal-content');
+        if (window.innerWidth <= 768) {
+            modalContent.style.width = '95vw';
+        } else {
+            // PC端保持固定宽度
+            modalContent.style.width = '1200px';
+        }
+    }
+});
 
 const url = './ASurveyofOCRSystemsforAncientChineseBooks.pdf'; // 同目录下的文件名
 const pdfjsLib = window['pdfjs-dist/build/pdf'];
