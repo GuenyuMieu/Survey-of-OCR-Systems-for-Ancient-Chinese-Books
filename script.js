@@ -380,10 +380,15 @@ function selectSample(name, index) {
     // 显示 loading，禁用所有缩略图
     loadingIndicator.style.display = 'flex';
     activeImg.style.opacity = '0.3';
+    activeImg.onclick = null; // 清除之前的点击事件
+    activeImg.style.cursor = 'default';
     thumbWrappers.forEach(w => w.style.pointerEvents = 'none');
 
     // 更新文件名
     document.getElementById('current-file-name').innerText = name.split(".")[0];
+
+    // 立即显示评测卡片（不等待图片加载）
+    updateCards(name);
 
     // 预加载图片
     const img = new Image();
@@ -393,17 +398,19 @@ function selectSample(name, index) {
         loadingIndicator.style.display = 'none';
         activeImg.style.opacity = '1';
         thumbWrappers.forEach(w => w.style.pointerEvents = 'auto');
-
-        // 更新评测卡片
-        updateCards(name);
     };
 
     img.onerror = function () {
-        // 加载失败
+        // 加载失败，显示错误状态，允许点击重新加载
         loadingIndicator.style.display = 'none';
-        activeImg.style.opacity = '1';
+        activeImg.style.opacity = '0.5';
+        activeImg.src = ''; // 清除图片
+        activeImg.alt = '图片加载失败，点击重新加载';
+        activeImg.style.cursor = 'pointer';
+        activeImg.onclick = function() {
+            selectSample(name, index);
+        };
         thumbWrappers.forEach(w => w.style.pointerEvents = 'auto');
-        alert(`图片 ${name} 加载失败！`);
     };
 
     img.src = `imgs/${name}`;
