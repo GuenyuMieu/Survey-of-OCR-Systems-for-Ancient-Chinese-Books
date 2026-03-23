@@ -370,19 +370,17 @@ function init() {
 function selectSample(name, index) {
     const activeImg = document.getElementById('active-img');
     const loadingIndicator = document.getElementById('img-loading');
-    const thumbWrappers = document.querySelectorAll('.thumb-item-wrapper');
 
     // 设置当前文件和激活状态
     currentFile = name;
-    thumbWrappers.forEach(w => w.classList.remove('active'));
+    document.querySelectorAll('.thumb-item-wrapper').forEach(w => w.classList.remove('active'));
     document.getElementById(`thumb-${index}`).classList.add('active');
 
-    // 显示 loading，禁用所有缩略图
+    // 显示 loading
     loadingIndicator.style.display = 'flex';
     activeImg.style.opacity = '0.3';
     activeImg.onclick = null; // 清除之前的点击事件
     activeImg.style.cursor = 'default';
-    thumbWrappers.forEach(w => w.style.pointerEvents = 'none');
 
     // 更新文件名
     document.getElementById('current-file-name').innerText = name.split(".")[0];
@@ -397,7 +395,6 @@ function selectSample(name, index) {
         activeImg.src = `imgs/${name}`;
         loadingIndicator.style.display = 'none';
         activeImg.style.opacity = '1';
-        thumbWrappers.forEach(w => w.style.pointerEvents = 'auto');
     };
 
     img.onerror = function () {
@@ -410,7 +407,6 @@ function selectSample(name, index) {
         activeImg.onclick = function() {
             selectSample(name, index);
         };
-        thumbWrappers.forEach(w => w.style.pointerEvents = 'auto');
     };
 
     img.src = `imgs/${name}`;
