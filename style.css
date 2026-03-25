@@ -44,7 +44,10 @@ body {
 
 .nav-links {
     display: flex;
+    align-items: center;
     gap: 10px;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .nav-links button {
@@ -943,9 +946,17 @@ select {
         padding: 0 10px;
     }
 
+    .nav-links {
+        width: auto;
+    }
+
     .nav-links button {
         padding: 10px;
         font-size: 10px;
+    }
+
+    .nav-links div {
+        display: none;
     }
 
     /* Hide desktop test layout, show mobile */
